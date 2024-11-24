@@ -49,8 +49,8 @@ router.post('/', async (req, res) => {
     // 1. A secure HTTP-only cookie for API authentication
     res.cookie("adminTokenSecure", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: "lax",
+      secure: true,
+      sameSite: "strict",
       path: '/',
       maxAge: 3600000,
     });
