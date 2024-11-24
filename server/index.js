@@ -98,5 +98,5 @@ mongoose.connect(process.env.MONGODB_URL)
         app.listen(PORT);
     })
     .catch((err) => {
-        res.status(500).json({ message: err.message });
+        console.log(err);
     })
