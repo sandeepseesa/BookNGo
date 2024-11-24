@@ -2,24 +2,25 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import Admin from "../models/Admin.js";
 import express from "express";
-import { truncate } from "fs";
 const router = express.Router();
 
 router.post('/', async (req, res) => {
-  const { email, password } = req.body;
-
-  // Input validation
-  if (!email || !password) {
-    return res.status(400).json({ message: "Email and password are required" });
-  }
-
-  // Email format validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    return res.status(400).json({ message: "Please enter a valid email address" });
-  }
 
   try {
+
+    const { email, password } = req.body;
+
+    // Input validation
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required" });
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: "Invalid email format" });
+    }
+
     // Check if admin exists
     const admin = await Admin.findOne({ email });
     if (!admin) {
@@ -42,35 +43,26 @@ router.post('/', async (req, res) => {
       process.env.JWT_SECRET,
       {
         expiresIn: "1h",
+        algorithm: 'HS256'
       }
     );
 
-    // Set two cookies:
-    // 1. A secure HTTP-only cookie for API authentication
-    res.cookie("adminTokenSecure", token, {
+    // Production secure cookie
+    const cookieOptions = {
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
+      sameSite: 'none',
       path: '/',
       maxAge: 3600000,
-    });
+    };
 
-    // 2. A non-HTTP-only cookie for client-side auth checks
-    res.cookie("adminToken", token, {
-      httpOnly: false,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: "lax",
-      path: '/',
-      maxAge: 3600000,
-    });
+    // set secure HTTP-only cookie
+    res.cookie("adminTokenSecure", token, cookieOptions);
 
-    // Non-HTTP-only cookie for client-side auth checks
-    res.cookie('isAdminAuthenticated', 'true', {
+    // Set non-HTTP-only cookie with limited data
+    res.cookie('adminAuth', 'true', {
+      ...cookieOptions,
       httpOnly: false,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 3600000
     });
 
     return res.status(200).json({
