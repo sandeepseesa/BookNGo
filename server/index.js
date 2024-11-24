@@ -16,8 +16,6 @@ dotenv.config();
 
 app.use(express.json());
 
-app.use(cookieParser());
-
 app.use(cors({
     origin: 'https://bookngo-client.onrender.com',
     credentials: true,
@@ -25,6 +23,7 @@ app.use(cors({
     allowedHeaders: ['Authorization', 'Content-Type'],
 }));
 
+app.use(cookieParser());
 
 app.use('/user/register', registerRoutes);
 app.use('/user/login', userLogin);
