@@ -2,31 +2,47 @@ import jwt from "jsonwebtoken";
 import Admin from "../models/Admin.js";
 
 const adminAuthMiddleware = async (req, res, next) => {
+  try {
 
-    //check for secure token first, then check for non-secure token
-    const token = req.cookies.adminTokenSecure || req.cookies.adminToken;
+    const token = req.cookies.adminToken;
   
     if (!token) {
-      return res.status(401).json({ message: "Not authorized, admin token missing" });
+      return res.status(401).json({ 
+        success: false,
+        message: "Not authorized, admin token missing" });
     }
   
-    try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       
       // Check if the token has admin role
       if (decoded.role !== "admin") {
-        return res.status(403).json({ message: "Access denied. Admins only." });
+        return res.status(403).json({ 
+          success: false,
+          message: "Access denied. Admins only." });
       }
   
       // Find admin and attach to request
-      req.admin = await Admin.findById(decoded.id).select("-password");
-      if (!req.admin) {
-        return res.status(401).json({ message: "Admin not found" });
+      const admin = await Admin.findById(decoded.id).select("-password");
+      if (!admin) {
+        return res.status(401).json({ 
+          success: false,
+          message: "Admin not found" });
       }
   
+      req.admin = admin;
+      
       next();
     } catch (err) {
-      res.status(401).json({ message: "Not authorized, admin token invalid" });
+      // Handle token expiration specifically
+    if (err.name === 'TokenExpiredError') {
+      return res.status(401).json({ 
+        success: false,
+        message: "Admin session expired. Please login again." 
+      });
+    }
+      res.status(401).json({ 
+        success: false, 
+        message: "Not authorized, admin token invalid" });
     }
   };
 

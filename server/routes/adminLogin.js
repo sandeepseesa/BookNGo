@@ -43,24 +43,23 @@ router.post('/', async (req, res) => {
       process.env.JWT_SECRET,
       {
         expiresIn: "1h",
-        algorithm: 'HS256'
       }
     );
 
     // Production secure cookie
     const cookieOptions = {
       httpOnly: true,
-      secure: true,
-      sameSite: 'none',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production',
       path: '/',
-      maxAge: 3600000,
+      maxAge: 1 * 60 * 60 * 1000, 
     };
 
-    // set secure HTTP-only cookie
-    res.cookie("adminTokenSecure", token, cookieOptions);
+    // set admin token 
+    res.cookie("adminToken", token, cookieOptions);
 
-    // Set non-HTTP-only cookie with limited data
-    res.cookie('adminAuth', 'true', {
+    // Set non-HTTP-only cookie for frontend  
+    res.cookie('isAdminAuthenticated', 'true', {
       ...cookieOptions,
       httpOnly: false,
     });
@@ -68,14 +67,17 @@ router.post('/', async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Admin login successful",
-      admin: {
-        id: admin._id,
-        email: admin.email,
-        role: "admin"
-      }
+      // admin: {
+      //   id: admin._id,
+      //   email: admin.email,
+      //   role: "admin"
+      // }
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error", error: error.message });
+    res.status(500).json({
+      success: false, 
+      message: "Server error", 
+      error: error.message });
   }
 });
 
