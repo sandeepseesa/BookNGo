@@ -45,19 +45,19 @@ app.use('/admin/register', adminRegister);
 app.get('/logout', async (req, res) => {
     res.cookie('userToken', '', {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        secure: true,
+        sameSite: 'none',
         path: '/',
         maxAge: 0
     });
 
-    res.cookie('userLoggedIn', '', {
-        httpOnly: false,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-        path: '/',
-        maxAge: 0
-    });
+    // res.cookie('userLoggedIn', '', {
+    //     httpOnly: false,
+    //     secure: true,
+    //     sameSite: 'none',
+    //     path: '/',
+    //     maxAge: 0
+    // });
 
     return res.status(200).json({ success: true, message: "Logged out successfully" });
 });
@@ -72,13 +72,13 @@ app.get('/admin/logout', async (req, res) => {
         maxAge: 0
     });
 
-    res.cookie('isAdminAuthenticated', '', {
-        httpOnly: false,
-        secure: true,
-        sameSite: 'none',
-        path: '/',
-        maxAge: 0
-    });
+    // res.cookie('isAdminAuthenticated', '', {
+    //     httpOnly: false,
+    //     secure: true,
+    //     sameSite: 'none',
+    //     path: '/',
+    //     maxAge: 0
+    // });
 
     return res.status(200).json({ success: true, message: "Logged out successfully" });
 });

@@ -47,23 +47,20 @@ router.post('/', async (req, res) => {
       }
     );
 
-    // Production secure cookie
-    const cookieOptions = {
+    // set admin token 
+    res.cookie("adminToken", token, {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
       path: '/',
       maxAge: 1 * 60 * 60 * 1000, 
-    };
-
-    // set admin token 
-    res.cookie("adminToken", token, cookieOptions);
-
-    // Set non-HTTP-only cookie for frontend  
-    res.cookie('isAdminAuthenticated', 'true', {
-      ...cookieOptions,
-      httpOnly: false,
     });
+
+    // Set non-HTTP-only cookie for local  
+    // res.cookie('isAdminAuthenticated', 'true', {
+    //   ...cookieOptions,
+    //   httpOnly: false,
+    // });
 
     return res.status(200).json({
       success: true,
