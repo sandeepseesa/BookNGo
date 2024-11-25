@@ -10,7 +10,7 @@ BookBazaar
 
 ![AdminPage1](./screenshots/ManagePackage.png)
 ![AdminPage2](./screenshots/ManageBooking.png)
-![UserPage](./screenshots/UserDashboard.png)
+![UserPage](./screenshots/User_Dashboard.png)
 
 ## Table of Contents
 
