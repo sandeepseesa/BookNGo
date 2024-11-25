@@ -49,8 +49,8 @@ function App() {
       }
 
       console.log('Auth state set to:', { 
-        isAuthenticated: hasAdminToken || hasUserToken, 
-        isAdmin: hasAdminToken 
+        isAuthenticated: adminToken || userToken, 
+        isAdmin: adminToken 
       });
 
     } catch (error) {
