@@ -19,13 +19,21 @@ function App() {
 
   const checkAuthStatus = () => {
     try {
-      // Only check for userToken and userLoggedIn for user auth
-    // const userLoggedIn = document.cookie.includes('userLoggedIn=true');
-    const userToken = document.cookie.includes('userToken');
     
-    // Only check for adminToken and isAdminAuthenticated for admin auth
-    // const adminLoggedIn = document.cookie.includes('isAdminAuthenticated=true');
-    const adminToken = document.cookie.includes('adminToken');
+    const cookies = document.cookie;
+    console.log('All cookies:', cookies); // Debug log
+
+    // Parse cookies into an object
+    const cookieObj = cookies.split(';').reduce((acc, cookie) => {
+      const [key, value] = cookie.trim().split('=');
+      acc[key] = value;
+      return acc;
+    }, {});
+
+    console.log('Parsed cookies:', cookieObj); // Debug log
+
+    const adminToken = document.cookie.includes('adminToken=');
+    const userToken = document.cookie.includes('userToken=');
 
     console.log('Cookie check:', { adminToken, userToken }); // Debug log
 
@@ -39,6 +47,12 @@ function App() {
         setIsAuthenticated(false);
         setIsAdmin(false);
       }
+
+      console.log('Auth state set to:', { 
+        isAuthenticated: hasAdminToken || hasUserToken, 
+        isAdmin: hasAdminToken 
+      });
+
     } catch (error) {
       console.error('Auth check error:', error);
       setIsAuthenticated(false);
@@ -48,6 +62,13 @@ function App() {
 
   useEffect(() => {
     checkAuthStatus();
+
+    // Check auth status periodically
+    const interval = setInterval(checkAuthStatus, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   return (
