@@ -1,6 +1,6 @@
 import './App.css';
 import { useState, useEffect } from 'react';
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
@@ -15,20 +15,22 @@ import { SnackbarProvider } from 'notistack';
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const navigate = useNavigate();
 
   const checkAuthStatus = () => {
-    const cookieObj = document.cookie.split('; ').reduce((prev, current) => {
-      const [name, value] = current.split('=');
-      prev[name] = value;
-      return prev;
-    }, {});
+    try {
+      // Check for admin authentication
+      const adminLoggedIn = document.cookie.includes('adminLoggedIn=true');
+      // Check for user authentication
+      const userLoggedIn = document.cookie.includes('userLoggedIn=true');
 
-
-    const isUserLoggedIn = Boolean(cookieObj.token);
-    const isAdminLoggedIn = cookieObj.isAdminAuthenticated === 'true';
-
-    setIsAuthenticated(isUserLoggedIn || isAdminLoggedIn);
-    setIsAdmin(isAdminLoggedIn);
+      setIsAuthenticated(userLoggedIn || adminLoggedIn);
+      setIsAdmin(adminLoggedIn);
+    } catch (error) {
+      console.error('Auth check error:', error);
+      setIsAuthenticated(false);
+      setIsAdmin(false);
+    }
   };
 
   useEffect(() => {
@@ -36,7 +38,7 @@ function App() {
   }, []);
 
   return (
-    <SnackbarProvider maxSnack={3} anchorOrigin={{ vertical: 'top', horizontal: 'right',}}
+    <SnackbarProvider maxSnack={3} anchorOrigin={{ vertical: 'top', horizontal: 'right', }}
       autoHideDuration={3000} >
 
       <div className="App">

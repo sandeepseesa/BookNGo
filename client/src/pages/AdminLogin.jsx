@@ -28,22 +28,16 @@ function AdminLogin({ onLoginSuccess }) {
         }
       });
       // setMessage("Login successful!");
+      if (response.data.success) {
       enqueueSnackbar('Login successful!', { variant: 'success' });
       onLoginSuccess();
-
-      // Increase timeout and add cookie check
-      setTimeout(() => {
-        const isAdminToken = document.cookie.includes('adminToken=');
-
-        if (isAdminToken) {
           navigate("/admin");
         } else {
-          enqueueSnackbar('Authentication error - please try again', { variant: 'error' });
+          enqueueSnackbar('Login failed', { variant: 'error' });
         }
-      }, 100);
 
     } catch (error) {
-      enqueueSnackbar(error.response?.data?.message || "An error occurred. Please try again.", { variant: 'error' });
+      enqueueSnackbar(error.response?.data?.message || "Login failed. Please try again.", { variant: 'error' });
     }
   };
 
