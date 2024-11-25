@@ -37,58 +37,44 @@ app.use('/admin/register', adminRegister);
 
 // Logout User
 app.get('/logout', async (req, res) => {
-    // Common cookie options
-    const cookieOptions = {
+    res.cookie('userToken', '', {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // true in production
+        secure: process.env.NODE_ENV === 'production',
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         path: '/',
-        expires: new Date(0),
-        domain: process.env.NODE_ENV === 'production' ? '.onrender.com' : 'localhost'
-    };
+        maxAge: 0
+    });
 
-    // Non-HTTP only cookie options (for frontend access)
-    const nonHttpOnlyCookieOptions = {
+    res.cookie('userLoggedIn', '', {
         httpOnly: false,
         secure: process.env.NODE_ENV === 'production',
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         path: '/',
-        expires: new Date(0),
-        domain: process.env.NODE_ENV === 'production' ? '.onrender.com' : 'localhost'
-    };
+        maxAge: 0
+    });
 
-    // Clear all authentication cookies
-    res.cookie("token", "", cookieOptions);
-    res.cookie("adminToken", "", cookieOptions);
-    res.cookie('isAdminAuthenticated', '', nonHttpOnlyCookieOptions);
-    res.status(200).json({ message: "Logged out successfully" });
+    return res.status(200).json({ success: true, message: "Logged out successfully" });
 });
 
 // Add this route for admin logout
 app.get('/admin/logout', async (req, res) => {
-    const cookieOptions = {
+    res.cookie("adminToken", '', {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         path: '/',
-        expires: new Date(0),
-        domain: process.env.NODE_ENV === 'production' ? '.onrender.com' : 'localhost'
-    };
+        maxAge: 0
+    });
 
-    const nonHttpOnlyCookieOptions = {
+    res.cookie('adminLoggedIn', '', {
         httpOnly: false,
         secure: process.env.NODE_ENV === 'production',
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         path: '/',
-        expires: new Date(0),
-        domain: process.env.NODE_ENV === 'production' ? '.onrender.com' : 'localhost'
-    };
+        maxAge: 0
+    });
 
-    res.cookie("adminToken", "", cookieOptions);
-    res.cookie("adminTokenSecure", "", cookieOptions);
-    res.cookie('isAdminAuthenticated', '', nonHttpOnlyCookieOptions);
-
-    res.status(200).json({ message: "Admin logged out successfully" });
+    return res.status(200).json({ success: true, message: "Logged out successfully" });
 });
 
 const PORT = process.env.PORT || 5000; 

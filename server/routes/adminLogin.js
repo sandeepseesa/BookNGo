@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import Admin from "../models/Admin.js";
 import express from "express";
+
 const router = express.Router();
 
 router.post('/', async (req, res) => {
@@ -24,13 +25,13 @@ router.post('/', async (req, res) => {
     // Check if admin exists
     const admin = await Admin.findOne({ email });
     if (!admin) {
-      return res.status(404).json({ message: "Admin not found" });
+      return res.status(404).json({ success: false, message: "Admin not found" });
     }
 
     // Compare password
     const isPasswordValid = await bcrypt.compare(password, admin.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ success: false, message: "Invalid credentials" });
     }
 
     // Generate JWT token with admin role explicitly included
@@ -67,11 +68,11 @@ router.post('/', async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Admin login successful",
-      // admin: {
-      //   id: admin._id,
-      //   email: admin.email,
-      //   role: "admin"
-      // }
+      admin: {
+        id: admin._id,
+        email: admin.email,
+        role: "admin"
+      }
     });
   } catch (error) {
     res.status(500).json({

@@ -14,6 +14,7 @@ const adminAuthMiddleware = async (req, res, next) => {
   
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       
+      try{
       // Check if the token has admin role
       if (decoded.role !== "admin") {
         return res.status(403).json({ 
@@ -30,19 +31,22 @@ const adminAuthMiddleware = async (req, res, next) => {
       }
   
       req.admin = admin;
-      
       next();
-    } catch (err) {
-      // Handle token expiration specifically
-    if (err.name === 'TokenExpiredError') {
+    } catch (jwtError) {
+      // Clear cookies on token verification failure
+      res.cookie('adminToken', '', { maxAge: 0 });
+      res.cookie('adminLoggedIn', '', { maxAge: 0 });
+
       return res.status(401).json({ 
         success: false,
-        message: "Admin session expired. Please login again." 
+        message: "Session expired. Please login again." 
       });
     }
-      res.status(401).json({ 
+
+  } catch (err) {
+      res.status(500).json({ 
         success: false, 
-        message: "Not authorized, admin token invalid" });
+        message: "Server error" });
     }
   };
 

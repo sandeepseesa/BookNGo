@@ -6,17 +6,17 @@ import express from "express";
 const router = express.Router();
 
 //generate token
-const generateToken = (user) => {
-    return jwt.sign(
-        {
-            id: user._id,
-            role: "user",
-            email: user.email
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: process.env.JWT_EXPIRY }
-    );
-}
+// const generateToken = (user) => {
+//     return jwt.sign(
+//         {
+//             id: user._id,
+//             role: "user",
+//             email: user.email
+//         },
+//         process.env.JWT_SECRET,
+//         { expiresIn: process.env.JWT_EXPIRY }
+//     );
+// }
 
 //login user
 router.post('/', async (req, res) => {
@@ -42,7 +42,7 @@ router.post('/', async (req, res) => {
             { expiresIn: "1h" }
         );
 
-        res.cookie("token", token, {
+        res.cookie("userToken", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production',
@@ -50,7 +50,15 @@ router.post('/', async (req, res) => {
             maxAge: 1 * 60 * 60 * 1000 // 24 hours
         });
 
-        res.status(200).json({
+        res.cookie("userLoggedIn", "true", {
+            httpOnly: false,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production',
+            path: '/',
+            maxAge: 1 * 60 * 60 * 1000
+          });
+
+        return res.status(200).json({
             success: true,
             message: "Login successful",
             user: {
