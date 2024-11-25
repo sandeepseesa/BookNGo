@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useSnackbar } from 'notistack';  
+import { useSnackbar } from 'notistack';
 
 function AdminLogin({ onLoginSuccess }) {
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
-  
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -19,11 +19,11 @@ function AdminLogin({ onLoginSuccess }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       const response = await axios.post(
-        "https://bookngo-server.onrender.com/admin/login", 
-        formData, 
+        "https://bookngo-server.onrender.com/admin/login",
+        formData,
         {
           withCredentials: true,
           headers: {
@@ -33,17 +33,15 @@ function AdminLogin({ onLoginSuccess }) {
       );
 
       if (response.data.success) {
-        
-      onLoginSuccess();
-      enqueueSnackbar('Login successful!', { variant: 'success' });
-          navigate("/admin");
-        } else {
-          enqueueSnackbar('Login failed', { variant: 'error' });
-        }
-
+        onLoginSuccess();
+        enqueueSnackbar('Login successful!', { variant: 'success' });
+        navigate("/admin");
+      } else {
+        enqueueSnackbar('Authentication failed, Cookies not set', { variant: 'error' });
+      }
     } catch (error) {
       enqueueSnackbar(
-        error.response?.data?.message || "Login failed. Please try again.", 
+        error.response?.data?.message || "Login failed. Please try again.",
         { variant: 'error' }
       );
     }

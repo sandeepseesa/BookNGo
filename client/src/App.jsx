@@ -24,8 +24,17 @@ function App() {
       // Check for user authentication
       const userLoggedIn = document.cookie.includes('userLoggedIn=true');
 
-      setIsAuthenticated(userLoggedIn || adminLoggedIn);
-      setIsAdmin(adminLoggedIn);
+      // Set authentication states based on cookies
+      if (adminLoggedIn) {
+        setIsAuthenticated(true);
+        setIsAdmin(true);
+      } else if (userLoggedIn) {
+        setIsAuthenticated(true);
+        setIsAdmin(false);
+      } else {
+        setIsAuthenticated(false);
+        setIsAdmin(false);
+      }
     } catch (error) {
       console.error('Auth check error:', error);
       setIsAuthenticated(false);
