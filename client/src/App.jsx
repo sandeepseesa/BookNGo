@@ -21,38 +21,14 @@ function App() {
     try {
     
     const cookies = document.cookie;
-    console.log('All cookies:', cookies); // Debug log
+    const isAdminAuthenticated = cookies.includes('adminToken');
 
-    // // Parse cookies into an object
-    // const cookieObj = cookies.split(';').reduce((acc, cookie) => {
-    //   const [key, value] = cookie.trim().split('=');
-    //   acc[key] = value;
-    //   return acc;
-    // }, {});
+    console.log('Cookie string:', cookies);
+    console.log('Admin authenticated:', isAdminAuthenticated);
+    
+    setIsAuthenticated(isAdminAuthenticated);
+    setIsAdmin(isAdminAuthenticated);
 
-    // console.log('Parsed cookies:', cookieObj); // Debug log
-    console.log('Admin token present', adminToken); // Debug log
-    const adminToken = document.cookie.includes('adminToken=');
-    const userToken = document.cookie.includes('userToken=');
-
-    console.log('Cookie check:', adminToken); // Debug log
-    console.log('User token present', userToken);
-
-      if (adminToken) {
-        setIsAuthenticated(true);
-        setIsAdmin(true);
-      } else if (userToken) {
-        setIsAuthenticated(true);
-        setIsAdmin(false);
-      } else {
-        setIsAuthenticated(false);
-        setIsAdmin(false);
-      }
-
-      // console.log('Auth state set to:', { 
-      //   isAuthenticated: adminToken || userToken, 
-      //   isAdmin: adminToken 
-      // });
 
     } catch (error) {
       console.error('Auth check error:', error);
