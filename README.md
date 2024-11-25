@@ -8,9 +8,11 @@ BookBazaar
 
 >A full-featured Travel Booking Content Management System (CMS) built using the MERN stack (MongoDB, Express, React, Node.js). A booking system that allows users to browse, book, and manage travel packages. The platform features separate interfaces for users and administrators, with secure authentication and real-time booking management.
 
-![AdminPage1](./screenshots/ManagePackage.png)
-![AdminPage2](./screenshots/ManageBooking.png)
-![UserPage](./screenshots/User_Dashboard.png)
+<p align="center">
+      <img src="./screenshots/ManagePackage.png" alt="ManagePackage" width="300"/>
+      <img src="./screenshots/ManageBooking.png" alt="ManageBooking" width="300"/>
+      <img src="./screenshots/UserDashboard.png" alt="UserDashboard" width="300"/>
+</p>
 
 ## Table of Contents
 
@@ -60,12 +62,20 @@ To run the project locally, follow these steps:
   ```
   ### Install frontend dependencies
    ```bash
-  cd ../client
-  npm install
-  ```
+    cd ../client
+    npm install
+    ```
 
+## Responsive Design
+
+<p align="center">
+      <img src="./screenshots/MobileView1.png" alt="MobileView1" width="300"/>
+      <img src="./screenshots/MobileView2.png" alt="MobileView2" width="300"/>
+      <img src="./screenshots/MobileView3.png" alt="MobileView3" width="300"/>
+</p>
+ 
 ## Environment Variables
-     
+   
   ### In server directory, create .env file
     ```bash    
       PORT=5000
@@ -91,17 +101,31 @@ To run the project locally, follow these steps:
 - JWT Authentication: Admin routes are protected and require a valid JWT token for access.
 
   ### Login
-  <p align="center"> <img src="./screenshots/Login.png" alt="Login" width="300"/> </p>
+
+<p align="center">
+    <img src="./screenshots/UserLogin1.png" alt="UserLogin1" width="200"/>
+    <img src="./screenshots/UserLogin2.png" alt="UserLogin2" width="3=200"/>
+    <img src="./screenshots/UserRegister1.png" alt="UserRegister1" width="200"/>
+    <img src="./screenshots/UserRegister2.png" alt="UserRegister2" width="200"/>
+</p>
   
   ### User Routes
   - `POST /user/register` - Register new user
   - `POST /user/login` - User login
   - `GET /user/logout` - User logout
 
+
   ### Admin Routes
   - `POST /admin/register` - Register new admin
   - `POST /admin/login` - Admin login
   - `GET /admin` - Admin dashboard access
+
+<p align="center">
+    <img src="./screenshots/AdminRegister1.png" alt="AdminRegister1" width="200"/>
+    <img src="./screenshots/AdminRegister2.png" alt="AdminRegister2" width="200"/>
+    <img src="./screenshots/AdminLogin1.png" alt="AdminLogin1" width="200"/>
+    <img src="./screenshots/AdminLogin2.png" alt="AdminLogin2" width="200"/>
+</p>
   
   ### Package Routes
   - `GET /package` - Get all packages
@@ -109,16 +133,33 @@ To run the project locally, follow these steps:
   - `PUT /package/:id` - Update package (admin only)
   - `DELETE /package/:id` - Delete package (admin only)
 
+<p align="center">
+    <img src="./screenshots/PackageCreate.png" alt="PackageCreate" width="300"/>
+    <img src="./screenshots/PackageDelete.png" alt="PackageDelete" width="300"/>
+    <img src="./screenshots/PackageUpdate.png" alt="PackageUpdate" width="300"/>
+</p>
+
   ### Booking Routes
   - `POST /booking` - Create new booking
   - `GET /booking` - Get all bookings
   - `PUT /booking/:id` - Update booking status
   - `DELETE /booking/:id` - Cancel booking
 
+<p align="center">
+    <img src="./screenshots/BookingConfirmed.png" alt="BookingConfirmed" width="300"/>
+    <img src="./screenshots/BookingCreated.png" alt="BookingCreated" width="300"/>
+    <img src="./screenshots/BookingCancelled.png" alt="BookingCancelled" width="300"/>
+</p>
+
 ## Error Handling
 
 - Proper error messages are provided for failed authentication and invalid operations.
 
+<p align="center">
+      <img src="./screenshots/Validation1.png" alt="Validation1" width="400"/>
+      <img src="./screenshots/Validation2.png" alt="Validation2" width="400"/>
+</p>
+  
 ## Security Measures
 - httpOnly Cookies: Used for JWT storage to prevent XSS attacks.
 - Environment Variables: Sensitive keys are stored securely.
