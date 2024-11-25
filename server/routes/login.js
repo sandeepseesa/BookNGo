@@ -30,12 +30,6 @@ router.post('/', async (req, res) => {
             { expiresIn: "1h" }
         );
 
-        // Clear all possible tokens
-        // res.cookie('token', '', cookieOptions);
-        // res.cookie('userToken', '', cookieOptions);
-        // res.cookie('adminToken', '', cookieOptions);
-        // res.cookie('userLoggedIn', '', { ...cookieOptions, httpOnly: false });
-        // res.cookie('isAdminAuthenticated', '', { ...cookieOptions, httpOnly: false });
 
         //set new tokens
         res.cookie("userToken", token, {
@@ -43,17 +37,8 @@ router.post('/', async (req, res) => {
             secure: true,
             sameSite: 'none',
             path: '/',
-            maxAge: 1 * 60 * 60 * 1000 // 24 hours
+            maxAge: 1 * 60 * 60 * 1000 
         });
-
-        //for non-http (local)
-        // res.cookie("userLoggedIn", "true", {
-        //     httpOnly: false,
-        //     secure: true,
-        //     sameSite: 'none',
-        //     path: '/',
-        //     maxAge: 1 * 60 * 60 * 1000
-        // });
 
         return res.status(200).json({
             success: true,

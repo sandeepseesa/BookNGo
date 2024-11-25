@@ -25,7 +25,6 @@ function AdminLogin({ onLoginSuccess }) {
         "https://bookngo-server.onrender.com/admin/login",
         formData,
         {
-          withCredentials: true,
           headers: {
             'Content-Type': 'application/json'
           }
@@ -33,16 +32,14 @@ function AdminLogin({ onLoginSuccess }) {
       );
 
       if (response.data.success) {
-        await onLoginSuccess();
+        onLoginSuccess();
+        
         enqueueSnackbar('Login successful!', { variant: 'success' });
         
-        setTimeout(() => {
-          navigate("/admin");
-        }, 100);
-      } else {
-        enqueueSnackbar('Authentication failed, Cookies not set', { variant: 'error' });
+        navigate("/admin");
       }
     } catch (error) {
+      console.error('Login error:', error);
       enqueueSnackbar(
         error.response?.data?.message || "Login failed. Please try again.",
         { variant: 'error' }

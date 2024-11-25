@@ -11,41 +11,36 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import AdminRegister from "./pages/AdminRegister.jsx";
 import AdminLogin from "./pages/AdminLogin.jsx";
 import { SnackbarProvider } from 'notistack';
+import jwt_decode from 'jwt-decode';
+import axios from 'axios';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
-  const checkAuthStatus = () => {
+  const checkAuthStatus = async () => {
     try {
-    
-    const cookies = document.cookie;
-    const isAdminAuthenticated = cookies.includes('adminToken');
+      const response = await axios.get(
+        'https://bookngo-server.onrender.com/auth/check',
+        { withCredentials: true }
+      );
 
-    console.log('Cookie string:', cookies);
-    console.log('Admin authenticated:', isAdminAuthenticated);
-    
-    setIsAuthenticated(isAdminAuthenticated);
-    setIsAdmin(isAdminAuthenticated);
-
-
+      if (response.data.success) {
+        setIsAuthenticated(true);
+        setIsAdmin(response.data.user.role === 'admin');
+      } else {
+        setIsAuthenticated(false);
+        setIsAdmin(false);
+      }
     } catch (error) {
-      console.error('Auth check error:', error);
       setIsAuthenticated(false);
       setIsAdmin(false);
-    } 
+    }
   };
 
   useEffect(() => {
     checkAuthStatus();
-
-    // // Check auth status periodically
-    // const interval = setInterval(checkAuthStatus, 1000);
-
-    // return () => {
-    //   clearInterval(interval);
-    // };
   }, []);
 
   return (

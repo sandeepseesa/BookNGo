@@ -13,16 +13,17 @@ function Navbar({ isAuthenticated, isAdmin, onAuthChange }) {
 
   const handleLogout = async () => {
     try {
-      await axios.get('https://bookngo-server.onrender.com/logout', { withCredentials: true });
-
-      document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-      document.cookie = 'adminToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-      document.cookie = 'isAdminAuthenticated=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-      
-      onAuthChange();
-      navigate("/login");
+        await axios.post(
+            'https://bookngo-server.onrender.com/auth/logout',
+            {},
+            { withCredentials: true }
+        );
+        onAuthChange();
+        navigate('/');
+        enqueueSnackbar('Logged out successfully', { variant: 'success' });
     } catch (error) {
-      enqueueSnackbar("Logout failed!", { variant: 'error' });
+        console.error('Logout error:', error);
+        enqueueSnackbar('Error logging out', { variant: 'error' });
     }
   };
 

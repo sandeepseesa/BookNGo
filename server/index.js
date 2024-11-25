@@ -9,6 +9,7 @@ import registerRoutes from './routes/register.js';
 import cookieParser from 'cookie-parser';
 import adminLogin from './routes/adminLogin.js';
 import adminRegister from './routes/adminRegister.js';
+import authMiddleware from './routes/authMiddleware.js';
 
 
 const app = express();
@@ -40,6 +41,16 @@ app.use('/package', packageRoutes);
 app.use('/admin/login', adminLogin);
 app.use('/admin/register', adminRegister);
 
+app.get('/auth/check', authMiddleware, (req, res) => {
+    return res.json({
+        success: true,
+        user: {
+            id: req.user.id,
+            email: req.user.email,
+            role: req.user.role
+        }
+    });
+});
 
 // Logout User
 app.get('/logout', async (req, res) => {
@@ -50,14 +61,6 @@ app.get('/logout', async (req, res) => {
         path: '/',
         maxAge: 0
     });
-
-    // res.cookie('userLoggedIn', '', {
-    //     httpOnly: false,
-    //     secure: true,
-    //     sameSite: 'none',
-    //     path: '/',
-    //     maxAge: 0
-    // });
 
     return res.status(200).json({ success: true, message: "Logged out successfully" });
 });
@@ -72,15 +75,20 @@ app.get('/admin/logout', async (req, res) => {
         maxAge: 0
     });
 
-    // res.cookie('isAdminAuthenticated', '', {
-    //     httpOnly: false,
-    //     secure: true,
-    //     sameSite: 'none',
-    //     path: '/',
-    //     maxAge: 0
-    // });
-
     return res.status(200).json({ success: true, message: "Logged out successfully" });
+});
+
+app.post('/logout', (req, res) => {
+    res.clearCookie('token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none'
+    });
+    
+    return res.json({
+        success: true,
+        message: 'Logged out successfully'
+    });
 });
 
 const PORT = process.env.PORT || 5000; 

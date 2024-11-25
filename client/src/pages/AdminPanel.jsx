@@ -24,8 +24,17 @@ function AdminPanel() {
   const { enqueueSnackbar } = useSnackbar();
   const fetchData = async () => {
     try {
-      const packagesResponse = await axios.get("https://bookngo-server.onrender.com/package", { withCredentials: true });
-      const bookingsResponse = await axios.get("https://bookngo-server.onrender.com/booking", { withCredentials: true });
+      const token = localStorage.getItem('token');
+      const packagesResponse = await axios.get("https://bookngo-server.onrender.com/package", {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const bookingsResponse = await axios.get("https://bookngo-server.onrender.com/booking", {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       setPackages(packagesResponse.data);
       setBookings(bookingsResponse.data);
     } catch (error) {
