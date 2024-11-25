@@ -5,13 +5,12 @@ import { useSnackbar } from 'notistack';
 
 function AdminLogin({ onLoginSuccess }) {
   const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const [message, setMessage] = useState("");
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,24 +19,33 @@ function AdminLogin({ onLoginSuccess }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     try {
-      const response = await axios.post("https://bookngo-server.onrender.com/admin/login", formData, {
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json'
+      const response = await axios.post(
+        "https://bookngo-server.onrender.com/admin/login", 
+        formData, 
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json'
+          }
         }
-      });
-      // setMessage("Login successful!");
+      );
+
       if (response.data.success) {
-      enqueueSnackbar('Login successful!', { variant: 'success' });
+        
       onLoginSuccess();
+      enqueueSnackbar('Login successful!', { variant: 'success' });
           navigate("/admin");
         } else {
           enqueueSnackbar('Login failed', { variant: 'error' });
         }
 
     } catch (error) {
-      enqueueSnackbar(error.response?.data?.message || "Login failed. Please try again.", { variant: 'error' });
+      enqueueSnackbar(
+        error.response?.data?.message || "Login failed. Please try again.", 
+        { variant: 'error' }
+      );
     }
   };
 
