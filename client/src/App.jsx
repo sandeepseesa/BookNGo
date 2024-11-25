@@ -23,19 +23,20 @@ function App() {
     const cookies = document.cookie;
     console.log('All cookies:', cookies); // Debug log
 
-    // Parse cookies into an object
-    const cookieObj = cookies.split(';').reduce((acc, cookie) => {
-      const [key, value] = cookie.trim().split('=');
-      acc[key] = value;
-      return acc;
-    }, {});
+    // // Parse cookies into an object
+    // const cookieObj = cookies.split(';').reduce((acc, cookie) => {
+    //   const [key, value] = cookie.trim().split('=');
+    //   acc[key] = value;
+    //   return acc;
+    // }, {});
 
-    console.log('Parsed cookies:', cookieObj); // Debug log
-
+    // console.log('Parsed cookies:', cookieObj); // Debug log
+    console.log('Admin token present', adminToken); // Debug log
     const adminToken = document.cookie.includes('adminToken=');
     const userToken = document.cookie.includes('userToken=');
 
-    console.log('Cookie check:', { adminToken, userToken }); // Debug log
+    console.log('Cookie check:', adminToken); // Debug log
+    console.log('User token present', userToken);
 
       if (adminToken) {
         setIsAuthenticated(true);
@@ -48,10 +49,10 @@ function App() {
         setIsAdmin(false);
       }
 
-      console.log('Auth state set to:', { 
-        isAuthenticated: adminToken || userToken, 
-        isAdmin: adminToken 
-      });
+      // console.log('Auth state set to:', { 
+      //   isAuthenticated: adminToken || userToken, 
+      //   isAdmin: adminToken 
+      // });
 
     } catch (error) {
       console.error('Auth check error:', error);
@@ -63,12 +64,12 @@ function App() {
   useEffect(() => {
     checkAuthStatus();
 
-    // Check auth status periodically
-    const interval = setInterval(checkAuthStatus, 1000);
+    // // Check auth status periodically
+    // const interval = setInterval(checkAuthStatus, 1000);
 
-    return () => {
-      clearInterval(interval);
-    };
+    // return () => {
+    //   clearInterval(interval);
+    // };
   }, []);
 
   return (
