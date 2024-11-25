@@ -4,9 +4,13 @@ BookBazaar
 <p align="center"> 
 <a href='https://bookngo-client.onrender.com'>Live Website</a> | <a href='https://github.com/sandeepseesa/BookNGo'>GitHub Repository</a> <p>
   
-## Overview
+## Project Overview
 
 >A full-featured Travel Booking Content Management System (CMS) built using the MERN stack (MongoDB, Express, React, Node.js). A booking system that allows users to browse, book, and manage travel packages. The platform features separate interfaces for users and administrators, with secure authentication and real-time booking management.
+
+![AdminPage1](./screenshots/ManagePackage.png)
+![AdminPage2](./screenshots/ManageBooking.png)
+![UserPage](./screenshots/User Dashboard.png)
 
 ## Table of Contents
 
