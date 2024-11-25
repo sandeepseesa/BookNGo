@@ -20,17 +20,21 @@ function App() {
   const checkAuthStatus = () => {
     try {
       // Only check for userToken and userLoggedIn for user auth
-    const userLoggedIn = document.cookie.includes('userLoggedIn=true');
-    const hasUserToken = document.cookie.includes('userToken=');
+    // const userLoggedIn = document.cookie.includes('userLoggedIn=true');
+    const userToken = document.cookie.includes('userToken');
     
     // Only check for adminToken and isAdminAuthenticated for admin auth
-    const adminLoggedIn = document.cookie.includes('isAdminAuthenticated=true');
-    const hasAdminToken = document.cookie.includes('adminToken=');
+    // const adminLoggedIn = document.cookie.includes('isAdminAuthenticated=true');
+    const adminToken = document.cookie.includes('adminToken');
 
+    console.log('Cookie check:', { adminToken, userToken }); // Debug log
 
-      if (response.data.success) {
+      if (adminToken) {
         setIsAuthenticated(true);
-        setIsAdmin(response.data.role === 'admin');
+        setIsAdmin(true);
+      } else if (userToken) {
+        setIsAuthenticated(true);
+        setIsAdmin(false);
       } else {
         setIsAuthenticated(false);
         setIsAdmin(false);
