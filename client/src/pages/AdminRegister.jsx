@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 
 function AdminRegister() {
-    console.log("AdminRegister component rendering"); // Add this line
     const [formData, setFormData] = useState({
         name: "",
         email: "",
