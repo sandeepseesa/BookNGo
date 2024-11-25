@@ -33,9 +33,12 @@ function AdminLogin({ onLoginSuccess }) {
       );
 
       if (response.data.success) {
-        onLoginSuccess();
+        await onLoginSuccess();
         enqueueSnackbar('Login successful!', { variant: 'success' });
-        navigate("/admin");
+        
+        setTimeout(() => {
+          navigate("/admin");
+        }, 100);
       } else {
         enqueueSnackbar('Authentication failed, Cookies not set', { variant: 'error' });
       }

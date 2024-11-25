@@ -27,13 +27,10 @@ function App() {
     const adminLoggedIn = document.cookie.includes('isAdminAuthenticated=true');
     const hasAdminToken = document.cookie.includes('adminToken=');
 
-      // Set authentication states based on cookies
-      if (adminLoggedIn && hasAdminToken) {
+
+      if (response.data.success) {
         setIsAuthenticated(true);
-        setIsAdmin(true);
-      } else if (userLoggedIn && hasUserToken) {
-        setIsAuthenticated(true);
-        setIsAdmin(false);
+        setIsAdmin(response.data.role === 'admin');
       } else {
         setIsAuthenticated(false);
         setIsAdmin(false);
@@ -42,7 +39,7 @@ function App() {
       console.error('Auth check error:', error);
       setIsAuthenticated(false);
       setIsAdmin(false);
-    }
+    } 
   };
 
   useEffect(() => {
