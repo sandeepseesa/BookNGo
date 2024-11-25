@@ -16,7 +16,11 @@ function Login({ onLoginSuccess }) {
       const response = await axios.post(
         "https://bookngo-server.onrender.com/user/login",
         { email, password },
-        { withCredentials: true }
+        { withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+         }
       );
 
       enqueueSnackbar('Logged in Successfully!', { variant: 'success' });

@@ -13,22 +13,31 @@ router.post('/', async (req, res) => {
         const { email, password } = req.body;
 
         const user = await User.findOne({ email });
-        if (!user) { 
-            return res.status(404).json({ success: false, message: "User not found" }); }
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(401).json({ success: false, message: "Invalid password" });
 
         const token = jwt.sign(
-            { 
+            {
                 id: user._id,
                 role: "user",
                 email: user.email
-            }, 
-            process.env.JWT_SECRET, 
+            },
+            process.env.JWT_SECRET,
             { expiresIn: "1h" }
         );
 
+        // Clear all possible tokens
+        res.cookie('token', '', cookieOptions);
+        res.cookie('userToken', '', cookieOptions);
+        res.cookie('adminToken', '', cookieOptions);
+        res.cookie('userLoggedIn', '', { ...cookieOptions, httpOnly: false });
+        res.cookie('isAdminAuthenticated', '', { ...cookieOptions, httpOnly: false });
+
+        //set new tokens
         res.cookie("userToken", token, {
             httpOnly: true,
             secure: true,
@@ -43,7 +52,7 @@ router.post('/', async (req, res) => {
             sameSite: 'none',
             path: '/',
             maxAge: 1 * 60 * 60 * 1000
-          });
+        });
 
         return res.status(200).json({
             success: true,
