@@ -6,6 +6,7 @@ import CreatePackageModal from "../components/admin/CreatePackageModal";
 import MessageAlert from "../components/admin/MessageAlert";
 import TabNavigation from "../components/admin/TabNavigation";
 import { useSnackbar } from 'notistack';
+import { useNavigate } from "react-router-dom";
 
 function AdminPanel() {
   const [packages, setPackages] = useState([]);
@@ -22,33 +23,50 @@ function AdminPanel() {
     maxTravelers: "",
   });
   const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
+
   const fetchData = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const packagesResponse = await axios.get("https://bookngo-server.onrender.com/package", {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      const bookingsResponse = await axios.get("https://bookngo-server.onrender.com/booking", {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const token = axios.defaults.headers.common['Authorization'];
+      const config = {
+        headers: { Authorization: token }
+      };
+
+      const packagesResponse = await axios.get(
+        "https://bookngo-server.onrender.com/package", 
+        config
+      );
+      const bookingsResponse = await axios.get(
+        "https://bookngo-server.onrender.com/booking", 
+        config
+      );
+      
       setPackages(packagesResponse.data);
       setBookings(bookingsResponse.data);
     } catch (error) {
-      enqueueSnackbar(error.response?.data?.message || "Error fetching data. Please try again.", { variant: 'error' });
+      if (error.response?.status === 401) {
+        delete axios.defaults.headers.common['Authorization'];
+        navigate('/admin/login');
+      }
+      enqueueSnackbar(
+        error.response?.data?.message || "Error fetching data", 
+        { variant: 'error' }
+      );
     }
   };
 
   const handleCreatePackage = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("https://bookngo-server.onrender.com/package", newPackage, {
-        withCredentials: true,
-      });
-      // setMessage("Package created successfully!");
+      const token = axios.defaults.headers.common['Authorization'];
+      await axios.post(
+        "https://bookngo-server.onrender.com/package",
+        newPackage,
+        {
+          headers: { Authorization: token }
+        }
+      );
+      
       enqueueSnackbar('Package created successfully!', { variant: 'success' });
       setIsModalOpen(false);
       setNewPackage({
@@ -61,7 +79,14 @@ function AdminPanel() {
       });
       fetchData();
     } catch (error) {
-      enqueueSnackbar(error.response?.data?.message || "Error creating package. Please try again.", { variant: 'error' });
+      if (error.response?.status === 401) {
+        delete axios.defaults.headers.common['Authorization'];
+        navigate('/admin/login');
+      }
+      enqueueSnackbar(
+        error.response?.data?.message || "Error creating package", 
+        { variant: 'error' }
+      );
     }
   };
 

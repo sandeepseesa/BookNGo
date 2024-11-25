@@ -1,22 +1,31 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useSnackbar } from 'notistack';
+import { useEffect } from 'react';
 
-function ProtectedRoute({ children, isAuthenticated, isAdmin }) {
+const ProtectedRoute = ({ children, isAuthenticated, isAdmin }) => {
   const { enqueueSnackbar } = useSnackbar();
+  const location = useLocation();
 
-  console.log('Protected Route:', { isAuthenticated, isAdmin }); // Debug log
+  useEffect(() => {
+    if (!isAuthenticated) {
+      enqueueSnackbar('Please login to access this page', { variant: 'warning' });
+      return;
+    }
+
+    if (!isAdmin && location.pathname.includes('/admin')) {
+      enqueueSnackbar('Admin access required', { variant: 'error' });
+    }
+  }, [isAuthenticated, isAdmin, location.pathname, enqueueSnackbar]);
 
   if (!isAuthenticated) {
-    enqueueSnackbar('Please login to access this page', { variant: 'warning' });
-    return <Navigate to="/admin/login" replace />;
+    return <Navigate to="/admin/login" state={{ from: location }} replace />;
   }
 
-  if (!isAdmin) {
-    enqueueSnackbar('Admin access required', { variant: 'error' });
+  if (!isAdmin && location.pathname.includes('/admin')) {
     return <Navigate to="/" replace />;
   }
 
   return children;
-}
+};
 
 export default ProtectedRoute;

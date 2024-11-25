@@ -15,17 +15,18 @@ import authMiddleware from './routes/authMiddleware.js';
 const app = express();
 dotenv.config();
 
-app.use(express.json());
-
-app.use(cookieParser());
 
 app.use(cors({
     origin: 'https://bookngo-client.onrender.com',
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Authorization', 'Content-Type'],
-    exposedHeaders: ['set-cookie']
+    allowedHeaders: [ 'Content-Type','Authorization'],
+    exposedHeaders: ['Authorization']
 }));
+
+app.use(express.json());
+
+app.use(cookieParser());
 
 // headers for cookie handling
 app.use((req, res, next) => {
@@ -78,18 +79,18 @@ app.get('/admin/logout', async (req, res) => {
     return res.status(200).json({ success: true, message: "Logged out successfully" });
 });
 
-app.post('/logout', (req, res) => {
-    res.clearCookie('token', {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'none'
-    });
+// app.post('/auth/logout', (req, res) => {
+//     res.clearCookie('token', {
+//         httpOnly: true,
+//         secure: true,
+//         sameSite: 'none'
+//     });
     
-    return res.json({
-        success: true,
-        message: 'Logged out successfully'
-    });
-});
+//     return res.json({
+//         success: true,
+//         message: 'Logged out successfully'
+//     });
+// });
 
 const PORT = process.env.PORT || 5000; 
 

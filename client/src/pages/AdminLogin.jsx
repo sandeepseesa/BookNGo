@@ -19,7 +19,7 @@ function AdminLogin({ onLoginSuccess }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     try {
       const response = await axios.post(
         "https://bookngo-server.onrender.com/admin/login",
@@ -32,10 +32,13 @@ function AdminLogin({ onLoginSuccess }) {
       );
 
       if (response.data.success) {
-        onLoginSuccess();
+        const token = response.headers.authorization;
+        if (token) {
+            axios.defaults.headers.common['Authorization'] = token;
+        }
         
+        await onLoginSuccess();
         enqueueSnackbar('Login successful!', { variant: 'success' });
-        
         navigate("/admin");
       }
     } catch (error) {

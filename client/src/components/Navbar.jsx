@@ -4,7 +4,7 @@ import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import MobileMenu from "./MobileMenu";
 
-function Navbar({ isAuthenticated, isAdmin, onAuthChange }) {
+function Navbar({ isAuthenticated, isAdmin, onLogout }) {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,17 +13,23 @@ function Navbar({ isAuthenticated, isAdmin, onAuthChange }) {
 
   const handleLogout = async () => {
     try {
-        await axios.post(
-            'https://bookngo-server.onrender.com/auth/logout',
-            {},
-            { withCredentials: true }
-        );
-        onAuthChange();
-        navigate('/');
-        enqueueSnackbar('Logged out successfully', { variant: 'success' });
+      const endpoint = isAdmin ? '/admin/login/logout' : '/user/login/logout';
+      
+      await axios.post(`https://bookngo-server.onrender.com${endpoint}`, {}, {
+        headers: {
+          'Authorization': axios.defaults.headers.common['Authorization']
+        }
+      });
+
+      delete axios.defaults.headers.common['Authorization'];
+      
+      onLogout();
+      
+      enqueueSnackbar('Logged out successfully', { variant: 'success' });
+      navigate('/');
     } catch (error) {
-        console.error('Logout error:', error);
-        enqueueSnackbar('Error logging out', { variant: 'error' });
+      console.error('Logout error:', error);
+      enqueueSnackbar('Error logging out', { variant: 'error' });
     }
   };
 

@@ -54,21 +54,17 @@ const Home = ({ isAuthenticated }) => {
     }
 
     try {
-      if (formData.numberoftravelers > selectedPackage.maxTravelers) {
-        enqueueSnackbar(`Maximum ${selectedPackage.maxTravelers} travelers allowed`, { variant: 'error' });
-        return;
-      }
-
-      const bookingData = {
-        packageId: selectedPackage._id,
-        selectedDate: new Date(formData.selectedDate),
-        numberoftravelers: parseInt(formData.numberoftravelers)
-      };
-
+      const token = axios.defaults.headers.common['Authorization'];
       const response = await axios.post(
         "https://bookngo-server.onrender.com/booking",
-        bookingData,
-        { withCredentials: true }
+        {
+          packageId: selectedPackage._id,
+          selectedDate: new Date(formData.selectedDate),
+          numberoftravelers: parseInt(formData.numberoftravelers)
+        },
+        {
+          headers: { Authorization: token }
+        }
       );
 
       if (response.data.message === 'Booking successful!') {
@@ -80,10 +76,15 @@ const Home = ({ isAuthenticated }) => {
         });
         await fetchPackages();
       }
-
     } catch (error) {
-    
-      enqueueSnackbar(error.response?.data?.message || "Booking failed!", { variant: 'error' });
+      if (error.response?.status === 401) {
+        delete axios.defaults.headers.common['Authorization'];
+        navigate('/login');
+      }
+      enqueueSnackbar(
+        error.response?.data?.message || "Booking failed!", 
+        { variant: 'error' }
+      );
     }
   };
 

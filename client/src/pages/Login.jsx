@@ -16,20 +16,28 @@ function Login({ onLoginSuccess }) {
       const response = await axios.post(
         "https://bookngo-server.onrender.com/user/login",
         { email, password },
-        { withCredentials: true,
+        {
           headers: {
             'Content-Type': 'application/json'
           }
-         }
+        }
       );
 
-      enqueueSnackbar('Logged in Successfully!', { variant: 'success' });
-      onLoginSuccess();
-      navigate("/");
+      if (response.data.success) {
+        const token = response.headers.authorization;
+        if (token) {
+            axios.defaults.headers.common['Authorization'] = token;
+        }
 
+        await onLoginSuccess(); // Wait for this to complete
+        enqueueSnackbar('Logged in Successfully!', { variant: 'success' });
+        navigate("/");
+      }
     } catch (error) {
-      // setError(error.response?.data?.message || "Login failed. Please check your credentials.");
-      enqueueSnackbar(error.response?.data?.message || "Login failed", { variant: 'error' });
+      enqueueSnackbar(
+        error.response?.data?.message || "Login failed", 
+        { variant: 'error' }
+      );
     }
   };
 
