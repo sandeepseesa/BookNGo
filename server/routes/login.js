@@ -5,19 +5,6 @@ import express from "express";
 
 const router = express.Router();
 
-//generate token
-// const generateToken = (user) => {
-//     return jwt.sign(
-//         {
-//             id: user._id,
-//             role: "user",
-//             email: user.email
-//         },
-//         process.env.JWT_SECRET,
-//         { expiresIn: process.env.JWT_EXPIRY }
-//     );
-// }
-
 //login user
 router.post('/', async (req, res) => {
 
@@ -44,16 +31,16 @@ router.post('/', async (req, res) => {
 
         res.cookie("userToken", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production',
+            secure: true,
+            sameSite: 'none',
             path: '/',
             maxAge: 1 * 60 * 60 * 1000 // 24 hours
         });
 
         res.cookie("userLoggedIn", "true", {
             httpOnly: false,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production',
+            secure: true,
+            sameSite: 'none',
             path: '/',
             maxAge: 1 * 60 * 60 * 1000
           });

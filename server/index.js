@@ -26,6 +26,12 @@ app.use(cors({
     exposedHeaders: ['set-cookie']
 }));
 
+// headers for cookie handling
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+  });
 
 app.use('/user/register', registerRoutes);
 app.use('/user/login', userLogin);
@@ -60,16 +66,16 @@ app.get('/logout', async (req, res) => {
 app.get('/admin/logout', async (req, res) => {
     res.cookie("adminToken", '', {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        secure: true,
+        sameSite: 'none',
         path: '/',
         maxAge: 0
     });
 
-    res.cookie('adminLoggedIn', '', {
+    res.cookie('isAdminAuthenticated', '', {
         httpOnly: false,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        secure: true,
+        sameSite: 'none',
         path: '/',
         maxAge: 0
     });

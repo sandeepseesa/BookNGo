@@ -50,8 +50,8 @@ router.post('/', async (req, res) => {
     // Production secure cookie
     const cookieOptions = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production',
+      secure: true,
+      sameSite: 'none',
       path: '/',
       maxAge: 1 * 60 * 60 * 1000, 
     };

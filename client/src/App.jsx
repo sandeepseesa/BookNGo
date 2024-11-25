@@ -20,7 +20,7 @@ function App() {
   const checkAuthStatus = () => {
     try {
       // Check for admin authentication
-      const adminLoggedIn = document.cookie.includes('adminLoggedIn=true');
+      const adminLoggedIn = document.cookie.includes('isAdminAuthenticated=true');
       // Check for user authentication
       const userLoggedIn = document.cookie.includes('userLoggedIn=true');
 
