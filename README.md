@@ -1,5 +1,5 @@
 <h1 align="center">
-BookBazaar
+BookNGo
 </h1>
 <p align="center"> 
 <a href='https://bookngo-client.onrender.com'>Live Website</a> | <a href='https://github.com/sandeepseesa/BookNGo'>GitHub Repository</a> <p>
