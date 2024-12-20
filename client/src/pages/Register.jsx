@@ -93,7 +93,7 @@ const Register = () => {
     <div className='min-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8'>
       <div className="w-full max-w-md p-8 space-y-8 bg-white shadow-lg rounded-xl">
         <div>
-        <h2 class="text-2xl font-bold text-gray-800 text-center">Create your account</h2>
+        <h2 className="text-2xl font-bold text-gray-800 text-center">Create your account</h2>
           {/* <h2 className="text-center text-3xl font-extrabold text-gray-900 mb-3">
             Create your account
           </h2> */}

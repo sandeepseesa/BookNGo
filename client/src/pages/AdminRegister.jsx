@@ -41,9 +41,9 @@ function AdminRegister() {
             <div className="min-h-screen flex items-center justify-center  py-4 px-4 sm:px-6 lg:px-8">
 
                 <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
-                    <div class="mb-6 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded">
-                        <div class="flex items-start">
-                            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <div className="mb-6 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded">
+                        <div className="flex items-start">
+                            <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m2 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                             <p>
