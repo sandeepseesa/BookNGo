@@ -1,1 +1,29 @@
 
+html {
+    scroll-behavior: smooth;
+  }
+
+.custom-snackbar-container {
+    top: 70px !important; /* Adjust to match navbar height */
+    left: 93%;
+    transform: translateX(-50%);
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px; /* Space between stacked notifications */
+    z-index: 1500; /* Ensure it's above other UI elements */
+}
+
+/* Navbar Link Hover Effects with Smooth Transition */
+ul li a {
+  transition: color 0.3s ease, transform 0.3s ease; /* Transition color and transform */
+}
+
+ul li a:hover {
+  color: #fbbf24; /* Change to yellow color */
+  transform: scale(1.1); /* Slightly scale up the link */
+  transition-delay: 0.2s; /* Delay transition by 0.2 seconds */
+}
+
+  

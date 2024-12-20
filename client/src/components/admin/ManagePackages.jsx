@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
 import UpdatePackageModal from './UpdatePackageModal';
+import BASE_URL from '../../config';
 
 function ManagePackages({ packages, fetchData, setIsModalOpen }) {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -12,7 +13,7 @@ function ManagePackages({ packages, fetchData, setIsModalOpen }) {
     const handleDeletePackage = async (id) => {
         if (window.confirm('Are you sure you want to delete this package? This action cannot be undone.')) {
             try {
-                await axios.delete(`https://bookngo-server.onrender.com/package/${id}`, {
+                await axios.delete(`${BASE_URL}/package/${id}`, {
                     withCredentials: true
                 });
                 // setMessage("Package deleted successfully!");
@@ -31,7 +32,7 @@ function ManagePackages({ packages, fetchData, setIsModalOpen }) {
 
     const handleUpdate = async (id, updatedData) => {
         try {
-            await axios.put(`https://bookngo-server.onrender.com/package/${id}`, updatedData, {
+            await axios.put(`${BASE_URL}/package/${id}`, updatedData, {
                 withCredentials: true
             });
             fetchData();

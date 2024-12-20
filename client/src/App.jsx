@@ -1,7 +1,6 @@
 import './App.css';
 import { useState, useEffect } from 'react';
-import { Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import AdminPanel from "./pages/AdminPanel.jsx";
@@ -12,12 +11,18 @@ import AdminRegister from "./pages/AdminRegister.jsx";
 import AdminLogin from "./pages/AdminLogin.jsx";
 import { SnackbarProvider, useSnackbar } from 'notistack';
 import axios from 'axios';
-
+import BASE_URL from './config.js';
+import UserBookings from './pages/UserBookings.jsx';
+import ReLoginModal from './components/ReLoginModal.jsx';
+import Home from './pages/Home.jsx';
+import Package from './pages/Package.jsx';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
 
   const checkAuthStatus = async (type = 'user') => {
     const token = axios.defaults.headers.common['Authorization'];
@@ -28,31 +33,24 @@ function App() {
     }
 
     try {
-      if (type === 'admin') {
-        const response = await axios.get('https://bookngo-server.onrender.com/admin/login/verify');
-        if (response.data.success) {
-          setIsAuthenticated(true);
-          setIsAdmin(true);
-        }
+      const endpoint =
+        type === 'admin'
+          ? `${BASE_URL}/admin/login/verify`
+          : `${BASE_URL}/user/login/verify`;
+      const response = await axios.get(endpoint);
+      if (response.data.success) {
+        setIsAuthenticated(true);
+        setIsAdmin(type === 'admin');
       } else {
-        const response = await axios.get('https://bookngo-server.onrender.com/user/login/verify');
-        if (response.data.success) {
-          setIsAuthenticated(true);
-          setIsAdmin(false);
-        }
+        setIsAuthenticated(false);
+        setIsAdmin(false);
       }
     } catch (error) {
       console.error('Auth check error:', error);
       if (error.response?.status === 401 || error.response?.status === 403) {
-        setIsAuthenticated(false);
-        setIsAdmin(false);
-        delete axios.defaults.headers.common['Authorization'];
+        handleLogout();
       }
     }
-  };
-
-  const handleLoginSuccess = async (type = 'user') => {
-    await checkAuthStatus(type);
   };
 
   const handleLogout = () => {
@@ -60,36 +58,70 @@ function App() {
     setIsAuthenticated(false);
     setIsAdmin(false);
     enqueueSnackbar('Logged out successfully', { variant: 'success' });
+    navigate('/login');
   };
 
   useEffect(() => {
-    const token = axios.defaults.headers.common['Authorization'];
-    if (token) {
-      checkAuthStatus();
-    }
+    const checkToken = async () => {
+      const token = axios.defaults.headers.common['Authorization'];
+      if (token) {
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1])); // Decode token
+          const isExpired = payload.exp * 1000 < Date.now();
+
+          if (isExpired) {
+            setShowModal(true);
+            handleLogout();
+          } else {
+            await checkAuthStatus();
+          }
+        } catch (error) {
+          console.error('Error decoding token:', error);
+          handleLogout();
+        }
+      }
+    };
+
+    checkToken();
   }, []);
 
+  const handleCloseModal = () => {
+    setShowModal(false);
+    navigate('/login');
+  };
+
   return (
-    <SnackbarProvider 
-      maxSnack={3} 
-      anchorOrigin={{ 
-        vertical: 'top', 
-        horizontal: 'right' 
+    <SnackbarProvider
+      maxSnack={3}
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
       }}
       autoHideDuration={3000}
+      classes={{
+        containerRoot: 'custom-snackbar-container',
+      }}
     >
-      <div className="App">
+
+      <div
+      // style={{ position: 'relative', zIndex: 1, }}
+      >
         <Navbar
           isAuthenticated={isAuthenticated}
           isAdmin={isAdmin}
           onLogout={handleLogout}
         />
+      </div>
+
+      <div >
+        {showModal && <ReLoginModal onClose={handleCloseModal} />}
         <Routes>
-          <Route path="/" element={<Home isAuthenticated={isAuthenticated} />} />
-          <Route path="/login" element={<Login onLoginSuccess={() => handleLoginSuccess('user')} />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/packages" element={<Package isAuthenticated={isAuthenticated} />} />
+          <Route path="/login" element={<Login onLoginSuccess={() => checkAuthStatus('user')} />} />
           <Route path="/register" element={<Register />} />
           <Route path="/admin/register" element={<AdminRegister />} />
-          <Route path="/admin/login" element={<AdminLogin onLoginSuccess={() => handleLoginSuccess('admin')} />} />
+          <Route path="/admin/login" element={<AdminLogin onLoginSuccess={() => checkAuthStatus('admin')} />} />
           <Route
             path="/admin"
             element={
@@ -98,8 +130,11 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/user/bookings" element={<UserBookings isAuthenticated={isAuthenticated} />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+
+
       </div>
     </SnackbarProvider>
   );

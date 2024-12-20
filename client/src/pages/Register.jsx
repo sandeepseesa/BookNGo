@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
+import  BASE_URL from '../config.js';
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -66,7 +67,7 @@ const Register = () => {
     }
 
     try {
-      const response = await axios.post('https://bookngo-server.onrender.com/user/register', { username, password, email });
+      const response = await axios.post(`${BASE_URL}/user/register`, { username, password, email });
       enqueueSnackbar('Registered Successfully!', { variant: 'success' });
       setError('');
 
@@ -92,9 +93,10 @@ const Register = () => {
     <div className='min-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8'>
       <div className="w-full max-w-md p-8 space-y-8 bg-white shadow-lg rounded-xl">
         <div>
-          <h2 className="text-center text-3xl font-extrabold text-gray-900 mb-3">
+        <h2 class="text-2xl font-bold text-gray-800 text-center">Create your account</h2>
+          {/* <h2 className="text-center text-3xl font-extrabold text-gray-900 mb-3">
             Create your account
-          </h2>
+          </h2> */}
           <p className="mt-2 text-center text-sm text-gray-600">
             Already have an account?{' '}
             <a

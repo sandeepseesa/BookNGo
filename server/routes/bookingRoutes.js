@@ -4,7 +4,7 @@ import Package from "../models/Package.js";
 import User from "../models/User.js";
 import authMiddleware from "./authMiddleware.js";
 import adminAuthMiddleware from "./adminAuthMiddleware.js";
-
+import combinedAuthMiddleware from "./combinedAuthMiddleware.js";
 
 const router = express.Router();
 
@@ -50,23 +50,24 @@ router.post('/', authMiddleware, async (req, res) => {
             booking: populatedBooking
         });
     } catch (error) {
-        res.status(500).json({ 
-            message: "Failed to create booking", 
-            error: error.message 
+        return res.status(500).json({
+            message: "Failed to create booking",
+            error: error.message
         });
     }
 });
 
+
 // Get all bookings
-router.get('/', async (req, res) => {
+router.get('/', combinedAuthMiddleware, async (req, res) => {
   try {
     const bookings = await Booking.find()
       .populate('userId', 'email username')
       .populate('packageId')
       .sort({ createdAt: -1 });
-    res.json(bookings);
+    return res.json(bookings);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 });
 
@@ -93,7 +94,7 @@ router.get('/:id', authMiddleware || adminAuthMiddleware, async (req, res) => {
 
 
 // Delete a booking
-router.delete('/:id', adminAuthMiddleware, async (req, res) => {
+router.delete('/:id', combinedAuthMiddleware, async (req, res) => {
     try {
 
         const booking = await Booking.findById(req.params.id);

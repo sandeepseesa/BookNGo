@@ -81,6 +81,13 @@ const MobileMenu = ({ isMenuOpen, isAuthenticated, setIsMenuOpen, isAdmin, handl
                 >
                   Home
                 </Link>
+                <Link 
+                  to="/user/bookings" 
+                  className="text-black hover:text-gray-600 block px-3 py-2 rounded-md text-base font-medium"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  My Bookings
+                </Link>
                 {isAdmin && (
                   <Link 
                     to="/admin" 

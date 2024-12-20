@@ -10,6 +10,7 @@ import cookieParser from 'cookie-parser';
 import adminLogin from './routes/adminLogin.js';
 import adminRegister from './routes/adminRegister.js';
 import authMiddleware from './routes/authMiddleware.js';
+import userBookings from './routes/userBookings.js';
 
 
 const app = express();
@@ -41,6 +42,7 @@ app.use('/booking', bookingRoutes);
 app.use('/package', packageRoutes);
 app.use('/admin/login', adminLogin);
 app.use('/admin/register', adminRegister);
+app.use('/user/bookings', userBookings);
 
 app.get('/auth/check', authMiddleware, (req, res) => {
     return res.json({
@@ -79,18 +81,6 @@ app.get('/admin/logout', async (req, res) => {
     return res.status(200).json({ success: true, message: "Logged out successfully" });
 });
 
-// app.post('/auth/logout', (req, res) => {
-//     res.clearCookie('token', {
-//         httpOnly: true,
-//         secure: true,
-//         sameSite: 'none'
-//     });
-    
-//     return res.json({
-//         success: true,
-//         message: 'Logged out successfully'
-//     });
-// });
 
 const PORT = process.env.PORT || 5000; 
 

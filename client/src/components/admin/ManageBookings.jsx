@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
+import BASE_URL from '../../config';
 
 function ManageBookings({ bookings, fetchData, setMessage }) {
     const { enqueueSnackbar } = useSnackbar();
@@ -8,7 +9,7 @@ function ManageBookings({ bookings, fetchData, setMessage }) {
     const handleUpdateBookingStatus = async (id, status) => {
         try {
             const response = await axios.patch(
-                `https://bookngo-server.onrender.com/booking/${id}/status`,
+                `${BASE_URL}/booking/${id}/status`,
                 { status },
                 { withCredentials: true }
             );
@@ -34,7 +35,7 @@ function ManageBookings({ bookings, fetchData, setMessage }) {
     const handleDeleteBooking = async (id) => {
         if (window.confirm('Are you sure you want to delete this booking? This action cannot be undone.')) {
             try {
-                await axios.delete(`https://bookngo-server.onrender.com/booking/${id}`, {
+                await axios.delete(`${BASE_URL}/booking/${id}`, {
                     withCredentials: true
                 });
                 enqueueSnackbar('Booking deleted successfully', { variant: 'success' });

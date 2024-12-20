@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSnackbar } from 'notistack';
+import BASE_URL from '../config.js';
 
 function Login({ onLoginSuccess }) {
   const [email, setEmail] = useState("");
@@ -14,7 +15,7 @@ function Login({ onLoginSuccess }) {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "https://bookngo-server.onrender.com/user/login",
+        `${BASE_URL}/user/login`,
         { email, password },
         {
           headers: {
@@ -22,6 +23,8 @@ function Login({ onLoginSuccess }) {
           }
         }
       );
+
+      // const { userId } = response.data.userId;
 
       if (response.data.success) {
         const token = response.headers.authorization;
@@ -45,9 +48,10 @@ function Login({ onLoginSuccess }) {
     <div className='min-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8'>
       <div className="w-full max-w-md p-8 space-y-8 bg-white shadow-lg rounded-xl">
         <div>
-          <h2 className="text-center text-3xl font-extrabold text-gray-900 mb-3">
+        <h2 className="text-2xl font-bold text-gray-800 text-center">Login to your account</h2>
+          {/* <h2 className="text-center text-3xl font-extrabold text-gray-900 mb-3">
             Login to your account
-          </h2>
+          </h2> */}
           <p className="mt-2 text-center text-sm text-gray-600">
             Don't have an account?{' '}
             <a

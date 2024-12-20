@@ -1,7 +1,8 @@
 import Package from "../models/Package.js";
 import express from 'express';
 import adminAuthMiddleware from "./adminAuthMiddleware.js";
-import authMiddleware from "./authMiddleware.js";
+import combinedAuthMiddleware from "./combinedAuthMiddleware.js";
+
 
 const router = express.Router();
 
@@ -30,7 +31,7 @@ router.get('/', async (req, res) => {
 });
 
 //route to get a specific package
-router.get('/:id', authMiddleware || adminAuthMiddleware, async (req, res) => {
+router.get('/:id', async (req, res) => {
     try{
         const pkg = await Package.findById(req.params.id);
         if(!pkg) return res.status(404).json({ message: "Package not found" });

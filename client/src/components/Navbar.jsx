@@ -1,8 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useSnackbar } from 'notistack';
-import { useState } from 'react';
-import MobileMenu from "./MobileMenu";
+import { useSnackbar } from "notistack";
+import { useState } from "react";
+import BASE_URL from "../config";
 
 function Navbar({ isAuthenticated, isAdmin, onLogout }) {
   const navigate = useNavigate();
@@ -14,17 +14,17 @@ function Navbar({ isAuthenticated, isAdmin, onLogout }) {
   const handleLogout = async () => {
     try {
       const endpoint = isAdmin ? '/admin/login/logout' : '/user/login/logout';
-      
-      await axios.post(`https://bookngo-server.onrender.com${endpoint}`, {}, {
+
+      await axios.post(`${BASE_URL}${endpoint}`, {}, {
         headers: {
           'Authorization': axios.defaults.headers.common['Authorization']
         }
       });
 
       delete axios.defaults.headers.common['Authorization'];
-      
+
       onLogout();
-      
+
       enqueueSnackbar('Logged out successfully', { variant: 'success' });
       navigate('/');
     } catch (error) {
@@ -37,173 +37,104 @@ function Navbar({ isAuthenticated, isAdmin, onLogout }) {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const handleLinkClick = (e, sectionId,) => {
+    e.preventDefault();
+    if (location.pathname === "/") {
+      // If already on the Home page, scroll to the section
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth" });
+      }
+    }  else {
+      // Navigate to Home page and scroll after navigation
+      navigate('/');
+      setTimeout(() => {
+        const section = document.getElementById(sectionId);
+        if (section) {
+          section.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 300); // Delay to ensure navigation happens before scrolling
+    setIsMenuOpen(false);
+    }
+  };
+
+
   return (
-    <nav className="bg-gradient-to-r from-red-600 via-green-500 to-green-700 text-white shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <Link to="/" className="text-2xl font-bold tracking-wide hover:text-blue-300 transition duration-200">
-              BookNGo
-            </Link>
-          </div>
+    <nav className="py-4 fixed w-full top-0 z-50 bg-black/50 shadow-xl">
+      <div className="container mx-auto flex justify-between items-center px-6">
+        <h1 className="text-2xl text-white font-bold">
+          <Link to="/">BookNGo</Link>
+        </h1>
+        
+        {/* Menu toggle for small screens */}
+        <button
+          className="text-white md:hidden"
+          onClick={toggleMenu}
+        >
+          ☰
+        </button>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
-              onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-blue-300 focus:outline-none"
-              aria-expanded="false"
-            >
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                {isMenuOpen ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                )}
-              </svg>
-            </button>
-          </div>
+        {/* Nav Links */}
+        <div
+          className={`absolute md:static top-16 left-0 w-full md:w-auto bg-black/75 md:bg-transparent md:flex items-center ${isMenuOpen ? "block" : "hidden"}`}
+        >
+          <ul className="flex flex-col md:flex-row justify-center md:space-x-8 p-4 md:p-0 w-full">
+            <li><Link to="/" className="text-white hover:text-yellow-500">Home</Link></li>
+            <li><Link to="/packages" className="text-white hover:text-yellow-500">Packages</Link></li>
+            <li onClick={(e) => handleLinkClick(e,"about")} className="text-white hover:text-yellow-500">About</li>
+            <li onClick={(e) => handleLinkClick(e, "testimonials")} className="text-white hover:text-yellow-500">Testimonials</li>
+            {/* <li onClick={(e) => handleLinkClick(e, "contact")} className="text-white hover:text-yellow-500">Contact</li> */}
 
-          {/* Desktop menu */}
-          <div className="hidden md:flex md:items-center md:space-x-6">
             {!isAuthenticated ? (
               <>
-                {/* Home Button */}
-                <button
-                  onClick={() => navigate('/')}
-                  className="px-4 py-2 border-2 border-white text-white rounded-lg hover:bg-white hover:text-gray-800 transition-colors duration-200"
-                >
-                  Home
-                </button>
-                
-                {/* User Button with Dropdown */}
-                <div className="relative">
+                <li className="relative">
                   <button
                     onClick={() => {
                       setShowUserModal(!showUserModal);
                       setShowAdminModal(false);
                     }}
-                    className="px-4 py-2 border-2 border-white text-white rounded-lg hover:bg-white hover:text-gray-800 transition-colors duration-200"
+                    className="text-white"
                   >
                     User
                   </button>
-                  
-                  {/* User Modal */}
                   {showUserModal && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-2 z-50">
-                      <Link
-                        to="/login"
-                        className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                        onClick={() => setShowUserModal(false)}
-                      >
-                        User Login
-                      </Link>
-                      <Link
-                        to="/register"
-                        className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                        onClick={() => setShowUserModal(false)}
-                      >
-                        User Register
-                      </Link>
+                      <Link to="/login" className="block px-4 py-2 text-gray-800 hover:bg-gray-100" onClick={() => setShowUserModal(false)} > User Login </Link>
+                      <Link to="/register" className="block px-4 py-2 text-gray-800 hover:bg-gray-100" onClick={() => setShowUserModal(false)} > User Register </Link>
                     </div>
                   )}
-                </div>
+                </li>
 
-                {/* Admin Button with Dropdown */}
-                <div className="relative">
-                  <button
-                    onClick={() => {
-                      setShowAdminModal(!showAdminModal);
-                      setShowUserModal(false);
-                    }}
-                    className="px-4 py-2 border-2 border-white text-white rounded-lg hover:bg-white hover:text-gray-800 transition-colors duration-200"
-                  >
-                    Admin
-                  </button>
-                  
-                  {/* Admin Modal */}
+                <li className="relative">
+                  <button onClick={() => { setShowAdminModal(!showAdminModal); setShowUserModal(false); }} className="text-white"> Admin </button>
                   {showAdminModal && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-2 z-50">
-                      <Link
-                        to="/admin/login"
-                        className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                        onClick={() => setShowAdminModal(false)}
-                      >
-                        Admin Login
-                      </Link>
-                      <Link
-                        to="/admin/register"
-                        className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
-                        onClick={() => setShowAdminModal(false)}
-                      >
-                        Admin Register
-                      </Link>
+                      <Link to="/admin/login" className="block px-4 py-2 text-gray-800 hover:bg-gray-100" onClick={() => setShowAdminModal(false)}>Admin Login </Link>
+                      <Link to="/admin/register"className="block px-4 py-2 text-gray-800 hover:bg-gray-100" onClick={() => setShowAdminModal(false)} > Admin Register </Link>
                     </div>
                   )}
-                </div>
+                </li>
               </>
             ) : (
               <>
-                <button
-                  onClick={() => navigate('/')}
-                  className="px-4 py-2 border-2 border-white text-white rounded-lg hover:bg-white hover:text-gray-800 transition-colors duration-200"
-                >
-                  Home
-                </button>
-                {isAdmin && (
-                  <button
-                    onClick={() => navigate('/admin')}
-                    className="px-4 py-2 border-2 border-white text-white rounded-lg hover:bg-white hover:text-gray-800 transition-colors duration-200"
-                  >
-                    Dashboard
-                  </button>
-                )}
-                <button
-                  onClick={handleLogout}
-                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 active:bg-red-700 transition-colors duration-200 shadow-sm hover:shadow-md"
-                >
-                  Logout
-                </button>
+                {/* <li>  <button onClick={() => navigate('/')} className="text-white hover:text-yellow-500" >Home</button></li> */}
+
+                {isAdmin ? (
+                  <li><button onClick={() => navigate('/admin')} className="text-white hover:text-yellow-500" >Dashboard</button> </li>
+                )
+                :
+                <li><button onClick={() => navigate('/user/bookings')} className="text-white hover:text-yellow-500"> My Bookings</button></li>
+              }
+                <li><button onClick={handleLogout} className="text-white hover:text-red-600">Logout</button></li>
               </>
             )}
-          </div>
+          </ul>
+
+          {/* Click outside to close dropdowns */}
+          {(showUserModal || showAdminModal) && (
+            <div className="fixed inset-0 z-40" onClick={() => { setShowUserModal(false); setShowAdminModal(false); }} />
+          )}
         </div>
-
-        {/* Click outside to close dropdowns */}
-        {(showUserModal || showAdminModal) && (
-          <div 
-            className="fixed inset-0 z-40"
-            onClick={() => {
-              setShowUserModal(false);
-              setShowAdminModal(false);
-            }}
-          />
-        )}
-
-        {/* Mobile menu */}
-        <MobileMenu 
-          isMenuOpen={isMenuOpen} 
-          isAuthenticated={isAuthenticated} 
-          setIsMenuOpen={setIsMenuOpen} 
-          isAdmin={isAdmin} 
-          handleLogout={handleLogout} 
-        />
       </div>
     </nav>
   );
